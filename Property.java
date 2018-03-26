@@ -23,18 +23,27 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 
 
-public class Properties {
+
+public class Property {
 	public static void main(String[] args) throws Exception {
-		CompilationUnit cu = get_compilation_unit("/Users/imanichilongani/Documents/workspace/A4/src/Human.java");
+		CompilationUnit cu = get_compilation_unit("/Users/akshatsingh/Downloads/CLL.java");
 		Map<VariableDeclarator, HashSet<Node>> attr_set = get_attributes(cu);
 		Map<MethodDeclaration, HashSet<Node>> method_set = get_methods(cu);
-		Iterator<Entry<MethodDeclaration, HashSet<Node>>> it = method_set.entrySet().iterator();
+		/*Iterator<Entry<MethodDeclaration, HashSet<Node>>> it = method_set.entrySet().iterator();
 		while(it.hasNext()) {
 			Entry<MethodDeclaration, HashSet<Node>> ent = it.next();
 			System.out.println(ent.getKey().getNameAsString());
 			System.out.println("_______________________________");
 			System.out.println(get_method_prop(ent));
 			System.out.println("------------******-------------");
+		}*/
+		for(VariableDeclarator x:attr_set.keySet()){
+			HashSet<MethodDeclaration> a = Properties.property(x, cu, cu);
+			System.out.println(x.getNameAsString().toUpperCase());
+			for(MethodDeclaration x1:a){
+				String it  = x1.getNameAsString();
+				System.out.println(it);
+			}
 		}
 		
 		
@@ -99,7 +108,7 @@ public class Properties {
 			
 		}
 		
-		List<AssignExpr> assign = method.findAll(AssignExpr.class);
+		/*List<AssignExpr> assign = method.findAll(AssignExpr.class);
 		for (int i=0;i<assign.size();i++) {
 			AssignExpr b = (AssignExpr) assign.get(i);
 			String s1 = b.getTarget().toString();
@@ -119,7 +128,7 @@ public class Properties {
 			meth_prop.add(mthds1.get(i));
 			meth_prop.add(mthds1.get(i));
 			
-		}
+		}*/
 		
 		return meth_prop;
 	} 

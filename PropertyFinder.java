@@ -15,10 +15,12 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.ForStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.stmt.WhileStmt;
 
 
 public class PropertyFinder {
@@ -68,6 +70,7 @@ public class PropertyFinder {
 		AssignExpr assign;
 		IfStmt ifstmt;
 		ForStmt forstmt;
+		WhileStmt whilestmt;
 		for (int i=0; i<mthds1.size();i++) {	
 			expsns =  (ArrayList<Expression>) mthds1.get(i).findAll(Expression.class);
 			stmts = (mthds1.get(i).findAll(Statement.class));
@@ -157,6 +160,16 @@ public class PropertyFinder {
 					}
 					Optional<Expression> temp = forstmt.getCompare();
 					Expression compare = temp.get();
+				if(z.isWhileStmt()){
+					whilestmt = (WhileStmt) z;
+					Expression a = whilestmt.getCondition();
+					String s1 =a.toString();
+					String[] splitStr = s1.split("[\\s+.]");
+					List<String> strlist1 = Arrays.asList(splitStr);
+					if(strlist1.contains(n.getNameAsString())){
+						properties.add(mthds1.get(i));
+				}
+				}
 					
 					
 					

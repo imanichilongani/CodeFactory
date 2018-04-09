@@ -4,10 +4,10 @@ import com.github.javaparser.ast.Node;
 
 public class Union {
 	
-	public float union(HashSet<Node> x, HashSet<Node> y){
+	public float union(HashSet<NodeProperties> x, HashSet<NodeProperties> y){
 		
-		HashSet<Node> union = x;
-		for(Node z:y){
+		HashSet<NodeProperties> union = x;
+		for(NodeProperties z:y){
 			if(!union.contains(z)){
 				union.add(z);
 			}

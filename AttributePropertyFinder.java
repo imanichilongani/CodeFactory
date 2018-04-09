@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -23,7 +25,7 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.stmt.WhileStmt;
 
 
-public class PropertyFinder {
+public class AttributePropertyFinder {
 	
 	
 	public static void main(String[] args) throws Exception {	
@@ -36,10 +38,39 @@ public class PropertyFinder {
 		}
 		
 	}
+	/*Returns a HashMap with VariableDeclarators as keys and A HashSet containing Nodes as values */
+
+public static Map<NodeProperties, HashSet<NodeProperties>>get_attributes1(CompilationUnit cu)  {
+		
+
+		List<VariableDeclarator> all_attributes = cu.findAll(VariableDeclarator.class); //All variables from CU
+		ClassOrInterfaceDeclaration the_class = cu.findAll(ClassOrInterfaceDeclaration.class).get(0);
+		List<MethodDeclaration> methods = cu.findAll(MethodDeclaration.class); //All method declarations from CU
+		for (int i=0; i<methods.size();i++) {
+			List<VariableDeclarator> m_variables = methods.get(i).findAll(VariableDeclarator.class); 
+			for (int m_var=0; m_var<m_variables.size();m_var++) {
+				if (all_attributes.contains(m_variables.get(m_var))) {
+					all_attributes.remove(m_variables.get(m_var));
+				
+				}
+			}
+		}
+		Map<NodeProperties, HashSet<NodeProperties>> attribute_set1 =new HashMap<NodeProperties, HashSet<NodeProperties>>();
+		for (int i=0;i<all_attributes.size();i++) {
+			String name = all_attributes.get(i).getNameAsString();
+			System.out.println(name);
+			NodeProperties.Type the_type = NodeProperties.Type.ATTRIBUTE;
+			NodeProperties new_node = new NodeProperties(name, the_class.getNameAsString(),the_type);
+			attribute_set1.put(new_node, new HashSet<NodeProperties>()); //add  attributes to hashmap
+		}				
+		
+
+		return attribute_set1;
+	}
 	
 	
 	
-	public static HashSet<MethodDeclaration> property(VariableDeclarator n,CompilationUnit cu1, CompilationUnit cu2) throws FileNotFoundException {
+	public static HashSet<NodeProperties> property(NodeProperties n,CompilationUnit cu1) throws FileNotFoundException {
 		/* FileInputStream in = new FileInputStream("/Users/akshatsingh/Downloads/TestVectors.java");	
 		CompilationUnit cu = JavaParser.parse(in);
 		
@@ -62,9 +93,9 @@ public class PropertyFinder {
 			}
 		}*/
 		
-		HashSet<MethodDeclaration> properties = new HashSet<MethodDeclaration>();
+		List<MethodDeclaration> properties = new ArrayList<MethodDeclaration>();
+		HashSet<NodeProperties> finalproperties = new HashSet<NodeProperties>();
 		List<MethodDeclaration> mthds1 = cu1.findAll(MethodDeclaration.class);
-		List<MethodDeclaration> mthds2 = cu2.findAll(MethodDeclaration.class);
 		ArrayList<Expression> expsns = new ArrayList<Expression>();
 		List<Statement> stmts =  new ArrayList<Statement>();
 		AssignExpr assign;
@@ -88,12 +119,12 @@ public class PropertyFinder {
 					List<String> strlist1 = Arrays.asList(splitStr);
 					List<String> strlist2 = Arrays.asList(splitStr2);
 					String[] splitted;
-					if(strlist1.contains(n.getNameAsString())){
+					if(strlist1.contains(n.name)){
 							properties.add(mthds1.get(i));
 					}
 					
 					
-					if(strlist2.contains(n.getNameAsString())){
+					if(strlist2.contains(n.name)){
 							properties.add(mthds1.get(i));
 					}
 						
@@ -115,13 +146,13 @@ public class PropertyFinder {
 					List<String> strlist2 = Arrays.asList(splitStr2);
 					List<String> strlist3 = Arrays.asList(splitStr3);
 					String[] splitted;
-					if(strlist1.contains(n.getNameAsString())){
+					if(strlist1.contains(n.name)){
 						properties.add(mthds1.get(i));
 					}
-					if(strlist2.contains(n.getNameAsString())){
+					if(strlist2.contains(n.name)){
 						properties.add(mthds1.get(i));
 					}
-					if(strlist3.contains(n.getNameAsString())){
+					if(strlist3.contains(n.name)){
 						properties.add(mthds1.get(i));
 					}	
 				}
@@ -130,7 +161,7 @@ public class PropertyFinder {
 					s1 = s1.replaceAll("[\\p{Punct}&&[^'.]]+", " ");
 					String[] splitStr1 = s1.split("[\\s+.]");
 					List<String> strlist1 = Arrays.asList(splitStr1);
-					if(strlist1.contains(n.getNameAsString())){
+					if(strlist1.contains(n.name)){
 						properties.add(mthds1.get(i));
 					}
 				}
@@ -149,10 +180,10 @@ public class PropertyFinder {
 							List<String> strlist1 = Arrays.asList(splitStr);
 							List<String> strlist2 = Arrays.asList(splitStr2);
 							String[] splitted;
-							if(strlist1.contains(n.getNameAsString())){
+							if(strlist1.contains(n.name)){
 									properties.add(mthds1.get(i));
 							}
-							if(strlist2.contains(n.getNameAsString())){
+							if(strlist2.contains(n.name)){
 									properties.add(mthds1.get(i));
 							}
 						}
@@ -166,7 +197,7 @@ public class PropertyFinder {
 					String s1 =a.toString();
 					String[] splitStr = s1.split("[\\s+.]");
 					List<String> strlist1 = Arrays.asList(splitStr);
-					if(strlist1.contains(n.getNameAsString())){
+					if(strlist1.contains(n.name)){
 						properties.add(mthds1.get(i));
 				}
 				}
@@ -179,10 +210,19 @@ public class PropertyFinder {
 				
 			}
 		}
+		for(int i=0;i<properties.size();i++){
+			String name = properties.get(i).getNameAsString();
+			NodeProperties.Type the_type = NodeProperties.Type.METHOD;
+			ClassOrInterfaceDeclaration the_class = cu1.findAll(ClassOrInterfaceDeclaration.class).get(0);
+			NodeProperties new_node = new NodeProperties(name, the_class.getNameAsString(),the_type);
+			finalproperties.add(new_node);
+			
+		}
+		return finalproperties;
 		
 		
 		
-		return properties;
+		
 	}
 	
 }

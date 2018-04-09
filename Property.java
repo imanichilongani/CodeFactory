@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.Set;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -27,7 +27,7 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 public class Property {
 	public static void main(String[] args) throws Exception {
 		CompilationUnit cu = get_compilation_unit("/Users/akshatsingh/Downloads/CLL.java");
-		Map<VariableDeclarator, HashSet<Node>> attr_set = get_attributes(cu);
+		Map<NodeProperties, HashSet<NodeProperties>> attr_set = AttributePropertyFinder.get_attributes1(cu);
 		Map<MethodDeclaration, HashSet<Node>> method_set = get_methods(cu);
 		/*Iterator<Entry<MethodDeclaration, HashSet<Node>>> it = method_set.entrySet().iterator();
 		while(it.hasNext()) {
@@ -37,12 +37,10 @@ public class Property {
 			System.out.println(get_method_prop(ent));
 			System.out.println("------------******-------------");
 		}*/
-		for(VariableDeclarator x:attr_set.keySet()){
-			HashSet<MethodDeclaration> a = Properties.property(x, cu, cu);
-			System.out.println(x.getNameAsString().toUpperCase());
-			for(MethodDeclaration x1:a){
-				String it  = x1.getNameAsString();
-				System.out.println(it);
+		for(NodeProperties x:attr_set.keySet()){
+			HashSet<NodeProperties> a = AttributePropertyFinder.property(x, cu);
+			for(NodeProperties x1:a){
+				String it  = x1.name;
 			}
 		}
 		
@@ -71,11 +69,44 @@ public class Property {
 			for (int m_var=0; m_var<m_variables.size();m_var++) {
 				if (attribute_set.containsKey(m_variables.get(m_var))) {
 					attribute_set.remove(m_variables.get(m_var));
+				
 				}
 			}
-		}	
+		}
+		
 		
 		return attribute_set;
+	}
+	
+public static Map<NodeProperties, HashSet<NodeProperties>>get_attributes1(CompilationUnit cu)  {
+		
+
+		List<VariableDeclarator> all_attributes = cu.findAll(VariableDeclarator.class); //All variables from CU
+		ClassOrInterfaceDeclaration the_class = cu.findAll(ClassOrInterfaceDeclaration.class).get(0);
+		Map<VariableDeclarator, HashSet<Node>> attribute_set = new HashMap<VariableDeclarator, HashSet<Node>>();
+		List<MethodDeclaration> methods = cu.findAll(MethodDeclaration.class); //All method declarations from CU
+		for (int i=0; i<methods.size();i++) {
+			List<VariableDeclarator> m_variables = methods.get(i).findAll(VariableDeclarator.class); 
+			for (int m_var=0; m_var<m_variables.size();m_var++) {
+				if (attribute_set.containsKey(m_variables.get(m_var))) {
+					attribute_set.remove(m_variables.get(m_var));
+				
+				}
+			}
+		}
+		Map<NodeProperties, HashSet<NodeProperties>> attribute_set1 =
+								new HashMap<NodeProperties, HashSet<NodeProperties>>();
+		Set<VariableDeclarator> x = attribute_set.keySet();
+		List<VariableDeclarator> y = (List)attribute_set.keySet();
+		for (int i=0;i<y.size();i++) {
+			String name = y.get(i).getNameAsString();
+			NodeProperties.Type the_type = NodeProperties.Type.ATTRIBUTE;
+			NodeProperties new_node = new NodeProperties(name, the_class.getNameAsString(),the_type);
+			attribute_set1.put(new_node, new HashSet<NodeProperties>()); //add  attributes to hashmap
+		}				
+		
+
+		return attribute_set1;
 	}
 	
 	

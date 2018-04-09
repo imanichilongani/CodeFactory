@@ -4,9 +4,9 @@ public class NodeProperties {
 		METHOD,
 		ATTRIBUTE
 	}
-	String name;
-	String from_class;
-	Type type;
+	public String name;
+	public String from_class;
+	public Type type;
 	
 	public NodeProperties(String the_name, String the_class, Type the_type) {
 		name = the_name;

@@ -4,7 +4,7 @@ import com.github.javaparser.ast.Node;
 
 public class Union {
 	
-	public float union(HashSet<NodeProperties> x, HashSet<NodeProperties> y){
+	public static float union(HashSet<NodeProperties> x, HashSet<NodeProperties> y){
 		
 		HashSet<NodeProperties> union = x;
 		for(NodeProperties z:y){

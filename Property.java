@@ -27,7 +27,7 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 public class Property {
 	public static void main(String[] args) throws Exception {
 		CompilationUnit cu = get_compilation_unit("/Users/akshatsingh/Downloads/CLL.java");
-		Map<NodeProperties, HashSet<NodeProperties>> attr_set = AttributePropertyFinder.get_attributes1(cu);
+		Map<NodeProperties, HashSet<NodeProperties>> attr_set = AttributePropertyFinder.get_attributes(cu);
 		Map<MethodDeclaration, HashSet<Node>> method_set = get_methods(cu);
 		/*Iterator<Entry<MethodDeclaration, HashSet<Node>>> it = method_set.entrySet().iterator();
 		while(it.hasNext()) {
@@ -37,13 +37,6 @@ public class Property {
 			System.out.println(get_method_prop(ent));
 			System.out.println("------------******-------------");
 		}*/
-		for(NodeProperties x:attr_set.keySet()){
-			HashSet<NodeProperties> a = AttributePropertyFinder.property(x, cu);
-			for(NodeProperties x1:a){
-				String it  = x1.name;
-			}
-		}
-		
 		
 	}
 	
@@ -55,30 +48,9 @@ public class Property {
 		return JavaParser.parse(in);
 	}
 	
-	/*Returns a HashMap with VariableDeclarators as keys and A HashSet containing Nodes as values */
-	public static Map<VariableDeclarator, HashSet<Node>>get_attributes(CompilationUnit cu)  {
-		
-		List<VariableDeclarator> all_variables = cu.findAll(VariableDeclarator.class); //All variables from CU
-		Map<VariableDeclarator, HashSet<Node>> attribute_set = new HashMap<VariableDeclarator, HashSet<Node>>();
-		for (int i=0;i<all_variables.size();i++) {
-			attribute_set.put(all_variables.get(i), new HashSet<Node>()); //add  attributes to hashmap
-		}	
-		List<MethodDeclaration> methods = cu.findAll(MethodDeclaration.class); //All method declarations from CU
-		for (int i=0; i<methods.size();i++) {
-			List<VariableDeclarator> m_variables = methods.get(i).findAll(VariableDeclarator.class); 
-			for (int m_var=0; m_var<m_variables.size();m_var++) {
-				if (attribute_set.containsKey(m_variables.get(m_var))) {
-					attribute_set.remove(m_variables.get(m_var));
-				
-				}
-			}
-		}
-		
-		
-		return attribute_set;
-	}
+
 	
-public static Map<NodeProperties, HashSet<NodeProperties>>get_attributes1(CompilationUnit cu)  {
+public static Map<NodeProperties, HashSet<NodeProperties>>get_attributes(CompilationUnit cu)  {
 		
 
 		List<VariableDeclarator> all_attributes = cu.findAll(VariableDeclarator.class); //All variables from CU

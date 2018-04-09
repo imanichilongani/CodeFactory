@@ -44,6 +44,7 @@ public class MethodPropertyFinder {
 			NodeProperties.Type the_type = NodeProperties.Type.METHOD;
 			NodeProperties method_node = new NodeProperties(name,ent.getValue(),the_type);
 			HashSet<NodeProperties> props = get_method_prop(ent.getKey(), ent.getValue());
+			props.add(method_node);
 			HashSet<NodeProperties> final_prop = get_used_attributes(attr,method_node,props);
 			map.put(method_node,final_prop);
 

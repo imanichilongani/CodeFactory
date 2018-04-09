@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -28,19 +30,9 @@ import com.github.javaparser.ast.stmt.WhileStmt;
 public class AttributePropertyFinder {
 	
 	
-	public static void main(String[] args) throws Exception {	
-		String s1 = "abcd = efgh.1234";
-		s1 = s1.replaceAll("[\\p{Punct}&&[^'.]]+", " ");
-		String[] splitted = s1.split("\\s+");
-		for (String x: splitted){
-			System.out.println(x);
-			
-		}
-		
-	}
 	/*Returns a HashMap with VariableDeclarators as keys and A HashSet containing Nodes as values */
 
-public static Map<NodeProperties, HashSet<NodeProperties>>get_attributes1(CompilationUnit cu)  {
+public static Map<NodeProperties, HashSet<NodeProperties>>get_attributes(CompilationUnit cu)  {
 		
 
 		List<VariableDeclarator> all_attributes = cu.findAll(VariableDeclarator.class); //All variables from CU
@@ -58,7 +50,6 @@ public static Map<NodeProperties, HashSet<NodeProperties>>get_attributes1(Compil
 		Map<NodeProperties, HashSet<NodeProperties>> attribute_set1 =new HashMap<NodeProperties, HashSet<NodeProperties>>();
 		for (int i=0;i<all_attributes.size();i++) {
 			String name = all_attributes.get(i).getNameAsString();
-			System.out.println(name);
 			NodeProperties.Type the_type = NodeProperties.Type.ATTRIBUTE;
 			NodeProperties new_node = new NodeProperties(name, the_class.getNameAsString(),the_type);
 			attribute_set1.put(new_node, new HashSet<NodeProperties>()); //add  attributes to hashmap
@@ -70,7 +61,7 @@ public static Map<NodeProperties, HashSet<NodeProperties>>get_attributes1(Compil
 	
 	
 	
-	public static HashSet<NodeProperties> property(NodeProperties n,CompilationUnit cu1) throws FileNotFoundException {
+	public static Map<NodeProperties, HashSet<NodeProperties>> property(Map<NodeProperties, HashSet<NodeProperties>> attributes,CompilationUnit cu1) throws FileNotFoundException {
 		/* FileInputStream in = new FileInputStream("/Users/akshatsingh/Downloads/TestVectors.java");	
 		CompilationUnit cu = JavaParser.parse(in);
 		
@@ -92,140 +83,146 @@ public static Map<NodeProperties, HashSet<NodeProperties>>get_attributes1(Compil
 				System.out.println(assign.getValue().toString());
 			}
 		}*/
-		
-		List<MethodDeclaration> properties = new ArrayList<MethodDeclaration>();
-		HashSet<NodeProperties> finalproperties = new HashSet<NodeProperties>();
-		List<MethodDeclaration> mthds1 = cu1.findAll(MethodDeclaration.class);
-		ArrayList<Expression> expsns = new ArrayList<Expression>();
-		List<Statement> stmts =  new ArrayList<Statement>();
-		AssignExpr assign;
-		IfStmt ifstmt;
-		ForStmt forstmt;
-		WhileStmt whilestmt;
-		for (int i=0; i<mthds1.size();i++) {	
-			expsns =  (ArrayList<Expression>) mthds1.get(i).findAll(Expression.class);
-			stmts = (mthds1.get(i).findAll(Statement.class));
-			for(int x=0;x<expsns.size();x++){
-				Expression z = (Expression) expsns.toArray()[x];
-				if (z.isAssignExpr()){
-					assign = (AssignExpr) z;
-					
-					String s1 = assign.getTarget().toString();
-					s1 = s1.replaceAll("[\\p{Punct}&&[^'.]]+", " ");
-					String s2 = assign.getValue().toString();
-					s2 = s2.replaceAll("[\\p{Punct}&&[^'.]]+", " ");
-					String[] splitStr = s1.split("[\\s.]");
-					String[] splitStr2 = s2.split("[\\s+.]");
-					List<String> strlist1 = Arrays.asList(splitStr);
-					List<String> strlist2 = Arrays.asList(splitStr2);
-					String[] splitted;
-					if(strlist1.contains(n.name)){
-							properties.add(mthds1.get(i));
-					}
-					
-					
-					if(strlist2.contains(n.name)){
-							properties.add(mthds1.get(i));
-					}
+		Set<NodeProperties> attributeset = attributes.keySet();
+		ArrayList<NodeProperties>attributelist  = new ArrayList<NodeProperties>(attributeset);
+		for(NodeProperties n:attributelist){
+			List<MethodDeclaration> properties = new ArrayList<MethodDeclaration>();
+			HashSet<NodeProperties> finalproperties = new HashSet<NodeProperties>();
+			List<MethodDeclaration> mthds1 = cu1.findAll(MethodDeclaration.class);
+			ArrayList<Expression> expsns = new ArrayList<Expression>();
+			List<Statement> stmts =  new ArrayList<Statement>();
+			AssignExpr assign;
+			IfStmt ifstmt;
+			ForStmt forstmt;
+			WhileStmt whilestmt;
+			for (int i=0; i<mthds1.size();i++) {	
+				expsns =  (ArrayList<Expression>) mthds1.get(i).findAll(Expression.class);
+				stmts = (mthds1.get(i).findAll(Statement.class));
+				for(int x=0;x<expsns.size();x++){
+					Expression z = (Expression) expsns.toArray()[x];
+					if (z.isAssignExpr()){
+						assign = (AssignExpr) z;
 						
-				}
-			}
-			for(int x=0;x<stmts.size();x++){
-				Statement z = stmts.get(x);
-				if(z.isIfStmt()){
-					ifstmt = (IfStmt) z;
-					String s1 = ifstmt.getCondition().toString();
-					s1 = s1.replaceAll("[\\p{Punct}&&[^'.]]+", " ");
-					String s2 = ifstmt.getThenStmt().toString();
-					s2 = s2.replaceAll("[\\p{Punct}&&[^'.]]+", " ");
-					String s3 = ifstmt.getElseStmt().toString();
-					String[] splitStr1 = s1.split("[\\s+.]");
-					String[] splitStr2 = s2.split("[\\s+.]");
-					String[] splitStr3 = s3.split("[\\s+.]");
-					List<String> strlist1 = Arrays.asList(splitStr1);
-					List<String> strlist2 = Arrays.asList(splitStr2);
-					List<String> strlist3 = Arrays.asList(splitStr3);
-					String[] splitted;
-					if(strlist1.contains(n.name)){
-						properties.add(mthds1.get(i));
-					}
-					if(strlist2.contains(n.name)){
-						properties.add(mthds1.get(i));
-					}
-					if(strlist3.contains(n.name)){
-						properties.add(mthds1.get(i));
-					}	
-				}
-				if (z.isReturnStmt()){
-					String s1 = z.toString();
-					s1 = s1.replaceAll("[\\p{Punct}&&[^'.]]+", " ");
-					String[] splitStr1 = s1.split("[\\s+.]");
-					List<String> strlist1 = Arrays.asList(splitStr1);
-					if(strlist1.contains(n.name)){
-						properties.add(mthds1.get(i));
-					}
-				}
-				if(z.isForStmt()){
-					forstmt = (ForStmt) z;
-					NodeList<Expression> init = forstmt.getInitialization();
-					for (Expression a: init){
-						if(a.isAssignExpr()){
-							AssignExpr b = (AssignExpr) a;
-							String s1 = b.getTarget().toString();
-							s1 = s1.replaceAll("[\\p{Punct}&&[^'.]]+", " ");
-							String s2 = b.getValue().toString();
-							s2 = s2.replaceAll("[\\p{Punct}&&[^'.]]+", " ");
-							String[] splitStr = s1.split("[\\s+.]");
-							String[] splitStr2 = s2.split("[\\s+.]");
-							List<String> strlist1 = Arrays.asList(splitStr);
-							List<String> strlist2 = Arrays.asList(splitStr2);
-							String[] splitted;
-							if(strlist1.contains(n.name)){
-									properties.add(mthds1.get(i));
-							}
-							if(strlist2.contains(n.name)){
-									properties.add(mthds1.get(i));
-							}
+						String s1 = assign.getTarget().toString();
+						s1 = s1.replaceAll("[\\p{Punct}&&[^'.]]+", " ");
+						String s2 = assign.getValue().toString();
+						s2 = s2.replaceAll("[\\p{Punct}&&[^'.]]+", " ");
+						String[] splitStr = s1.split("[\\s.]");
+						String[] splitStr2 = s2.split("[\\s+.]");
+						List<String> strlist1 = Arrays.asList(splitStr);
+						List<String> strlist2 = Arrays.asList(splitStr2);
+						String[] splitted;
+						if(strlist1.contains(n.name)){
+								properties.add(mthds1.get(i));
 						}
 						
+						
+						if(strlist2.contains(n.name)){
+								properties.add(mthds1.get(i));
+						}
+							
 					}
-					Optional<Expression> temp = forstmt.getCompare();
-					Expression compare = temp.get();
-				if(z.isWhileStmt()){
-					whilestmt = (WhileStmt) z;
-					Expression a = whilestmt.getCondition();
-					String s1 =a.toString();
-					String[] splitStr = s1.split("[\\s+.]");
-					List<String> strlist1 = Arrays.asList(splitStr);
-					if(strlist1.contains(n.name)){
-						properties.add(mthds1.get(i));
 				}
+				for(int x=0;x<stmts.size();x++){
+					Statement z = stmts.get(x);
+					if(z.isIfStmt()){
+						ifstmt = (IfStmt) z;
+						String s1 = ifstmt.getCondition().toString();
+						s1 = s1.replaceAll("[\\p{Punct}&&[^'.]]+", " ");
+						String s2 = ifstmt.getThenStmt().toString();
+						s2 = s2.replaceAll("[\\p{Punct}&&[^'.]]+", " ");
+						String s3 = ifstmt.getElseStmt().toString();
+						String[] splitStr1 = s1.split("[\\s+.]");
+						String[] splitStr2 = s2.split("[\\s+.]");
+						String[] splitStr3 = s3.split("[\\s+.]");
+						List<String> strlist1 = Arrays.asList(splitStr1);
+						List<String> strlist2 = Arrays.asList(splitStr2);
+						List<String> strlist3 = Arrays.asList(splitStr3);
+						String[] splitted;
+						if(strlist1.contains(n.name)){
+							properties.add(mthds1.get(i));
+						}
+						if(strlist2.contains(n.name)){
+							properties.add(mthds1.get(i));
+						}
+						if(strlist3.contains(n.name)){
+							properties.add(mthds1.get(i));
+						}	
+					}
+					if (z.isReturnStmt()){
+						String s1 = z.toString();
+						s1 = s1.replaceAll("[\\p{Punct}&&[^'.]]+", " ");
+						String[] splitStr1 = s1.split("[\\s+.]");
+						List<String> strlist1 = Arrays.asList(splitStr1);
+						if(strlist1.contains(n.name)){
+							properties.add(mthds1.get(i));
+						}
+					}
+					if(z.isForStmt()){
+						forstmt = (ForStmt) z;
+						NodeList<Expression> init = forstmt.getInitialization();
+						for (Expression a: init){
+							if(a.isAssignExpr()){
+								AssignExpr b = (AssignExpr) a;
+								String s1 = b.getTarget().toString();
+								s1 = s1.replaceAll("[\\p{Punct}&&[^'.]]+", " ");
+								String s2 = b.getValue().toString();
+								s2 = s2.replaceAll("[\\p{Punct}&&[^'.]]+", " ");
+								String[] splitStr = s1.split("[\\s+.]");
+								String[] splitStr2 = s2.split("[\\s+.]");
+								List<String> strlist1 = Arrays.asList(splitStr);
+								List<String> strlist2 = Arrays.asList(splitStr2);
+								String[] splitted;
+								if(strlist1.contains(n.name)){
+										properties.add(mthds1.get(i));
+								}
+								if(strlist2.contains(n.name)){
+										properties.add(mthds1.get(i));
+								}
+							}
+							
+						}
+						Optional<Expression> temp = forstmt.getCompare();
+						Expression compare = temp.get();
+					if(z.isWhileStmt()){
+						whilestmt = (WhileStmt) z;
+						Expression a = whilestmt.getCondition();
+						String s1 =a.toString();
+						String[] splitStr = s1.split("[\\s+.]");
+						List<String> strlist1 = Arrays.asList(splitStr);
+						if(strlist1.contains(n.name)){
+							properties.add(mthds1.get(i));
+					}
+					}
+						
+						
+						
+						
+					}
+					
+					
 				}
-					
-					
-					
-					
-				}
-				
+			}
+			for(int i=0;i<properties.size();i++){
+				String name = properties.get(i).getNameAsString();
+				NodeProperties.Type the_type = NodeProperties.Type.METHOD;
+				ClassOrInterfaceDeclaration the_class = cu1.findAll(ClassOrInterfaceDeclaration.class).get(0);
+				NodeProperties new_node = new NodeProperties(name, the_class.getNameAsString(),the_type);
+				finalproperties.add(new_node);
 				
 			}
-		}
-		for(int i=0;i<properties.size();i++){
-			String name = properties.get(i).getNameAsString();
-			NodeProperties.Type the_type = NodeProperties.Type.METHOD;
-			ClassOrInterfaceDeclaration the_class = cu1.findAll(ClassOrInterfaceDeclaration.class).get(0);
-			NodeProperties new_node = new NodeProperties(name, the_class.getNameAsString(),the_type);
-			finalproperties.add(new_node);
+			
+		finalproperties.add(n);	
+		attributes.put(n, finalproperties);	
+			
 			
 		}
-		return finalproperties;
-		
-		
-		
-		
+		return attributes;
 	}
-	
+			
 }
+		
+		
 		//if((A.a)==st)
 		//A.a=2
 		//x = "A.a" + 4

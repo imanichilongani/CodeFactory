@@ -20,10 +20,10 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 public class MethodPropertyFinder {
 	
 	/*Returns a HashMap with a MethodDeclaration as key and String as value*/
-	public static Map<MethodDeclaration, String>get_methods(CompilationUnit cu) {
+	public static HashMap<MethodDeclaration, String>get_methods(CompilationUnit cu) {
 		List<MethodDeclaration> all_methods = cu.findAll(MethodDeclaration.class);
 		ClassOrInterfaceDeclaration the_class = cu.findAll(ClassOrInterfaceDeclaration.class).get(0);
-		Map<MethodDeclaration, String> method_set = 
+		HashMap<MethodDeclaration, String> method_set = 
 				new HashMap<MethodDeclaration, String>();
 		for (int i=0;i<all_methods.size();i++) {
 			method_set.put(all_methods.get(i), the_class.getNameAsString()); 
@@ -34,9 +34,9 @@ public class MethodPropertyFinder {
 	
 	
 	/*Returns a HashMap with a NodeProperties instance as key and HashSet of Node Properties as value*/
-	public static Map<NodeProperties, HashSet<NodeProperties>>get_method_map(Map<MethodDeclaration, String> methods,
-				Map<NodeProperties, HashSet<NodeProperties>> attr){
-		Map<NodeProperties, HashSet<NodeProperties>> map = new HashMap<NodeProperties, HashSet<NodeProperties>>();
+	public static HashMap<NodeProperties, HashSet<NodeProperties>>get_method_map(HashMap<MethodDeclaration, String> methods,
+				HashMap<NodeProperties, HashSet<NodeProperties>> attr){
+		HashMap<NodeProperties, HashSet<NodeProperties>> map = new HashMap<NodeProperties, HashSet<NodeProperties>>();
 		Iterator<Entry<MethodDeclaration, String>> it = methods.entrySet().iterator();
 		while(it.hasNext()) {
 			Entry<MethodDeclaration, String> ent = it.next();

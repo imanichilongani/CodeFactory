@@ -11,13 +11,25 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 public class Main {
 	public static void main(String[] args) throws FileNotFoundException {		
 		CompilationUnit cu = Property.get_compilation_unit("/Users/imanichilongani/Documents/workspace/A4/src/Human.java");
-		Map<NodeProperties, HashSet<NodeProperties>> attr_prop = AttributePropertyFinder.get_attributes(cu);		
-		Map<MethodDeclaration, String> methods = MethodPropertyFinder.get_methods(cu);
-		Map<NodeProperties, HashSet<NodeProperties>> method_prop = MethodPropertyFinder.get_method_map(methods, attr_prop);
+		HashMap<NodeProperties, HashSet<NodeProperties>> attr_prop = (HashMap<NodeProperties, HashSet<NodeProperties>>) AttributePropertyFinder.get_attributes(cu);
+		HashMap<NodeProperties,HashSet<NodeProperties>> attribute_prop = (HashMap<NodeProperties, HashSet<NodeProperties>>) AttributePropertyFinder.attributepropertyfinder(attr_prop, cu);
+		HashMap<MethodDeclaration, String> methods = (HashMap<MethodDeclaration, String>) MethodPropertyFinder.get_methods(cu);
+		HashMap<NodeProperties, HashSet<NodeProperties>> method_prop = (HashMap<NodeProperties, HashSet<NodeProperties>>) MethodPropertyFinder.get_method_map(methods, attribute_prop);
 		HashMap<NodeProperties, HashMap<NodeProperties, Float>> result = new HashMap<NodeProperties, HashMap<NodeProperties, Float>>();
 		Iterator<Entry<NodeProperties, HashSet<NodeProperties>>> entity_x = method_prop.entrySet().iterator();
 		while (entity_x.hasNext() ) {
 			Entry<NodeProperties, HashSet<NodeProperties>> x = entity_x.next();
+			//System.out.println(x.getKey().name + ": " + x.getKey().name.length());
+			if (x.getKey().name.toLowerCase().equals("isdead") || x.getKey().name.toLowerCase().equals("getneighbors")) {
+				System.out.println(x.getKey().name);
+				System.out.println("Properties");
+				Iterator<NodeProperties> st = x.getValue().iterator();
+				while (st.hasNext()) {
+					NodeProperties nde = st.next();
+					System.out.println(nde.name);
+				}
+				System.out.println("____________________________");
+			}
 			HashMap<NodeProperties, Float> distances_x = new HashMap<NodeProperties, Float>();
 			Iterator<Entry<NodeProperties, HashSet<NodeProperties>>> entity_y = method_prop.entrySet().iterator();
 			while(entity_y.hasNext()) {
@@ -32,13 +44,13 @@ public class Main {
 		Iterator<Entry<NodeProperties, HashMap<NodeProperties, Float>>> res = result.entrySet().iterator();
 		while (res.hasNext()) {
 			Entry<NodeProperties, HashMap<NodeProperties, Float>> ent = res.next();
-			System.out.println(ent.getKey().name);
+			//System.out.println(ent.getKey().name);
 			Iterator<Entry<NodeProperties, Float>> values = ent.getValue().entrySet().iterator();
 			while (values.hasNext()) {
 				Entry<NodeProperties, Float> value = values.next();
-				System.out.println(value.getKey().name + ": " + value.getValue());
+				//System.out.println(value.getKey().name + ": " + value.getValue());
 			}
-			System.out.println("--------------------------");
+			//System.out.println("--------------------------");
 		}
 	}
 }

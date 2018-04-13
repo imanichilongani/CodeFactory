@@ -32,7 +32,7 @@ public class AttributePropertyFinder {
 	
 	/*Returns a HashMap with VariableDeclarators as keys and A HashSet containing Nodes as values */
 
-public static Map<NodeProperties, HashSet<NodeProperties>>get_attributes(CompilationUnit cu)  {
+public static HashMap<NodeProperties, HashSet<NodeProperties>>get_attributes(CompilationUnit cu)  {
 		
 
 		List<VariableDeclarator> all_attributes = cu.findAll(VariableDeclarator.class); //All variables from CU
@@ -47,7 +47,7 @@ public static Map<NodeProperties, HashSet<NodeProperties>>get_attributes(Compila
 				}
 			}
 		}
-		Map<NodeProperties, HashSet<NodeProperties>> attribute_set1 =new HashMap<NodeProperties, HashSet<NodeProperties>>();
+		HashMap<NodeProperties, HashSet<NodeProperties>> attribute_set1 =new HashMap<NodeProperties, HashSet<NodeProperties>>();
 		for (int i=0;i<all_attributes.size();i++) {
 			String name = all_attributes.get(i).getNameAsString();
 			NodeProperties.Type the_type = NodeProperties.Type.ATTRIBUTE;
@@ -61,7 +61,7 @@ public static Map<NodeProperties, HashSet<NodeProperties>>get_attributes(Compila
 	
 	
 	
-	public static Map<NodeProperties, HashSet<NodeProperties>> property(Map<NodeProperties, HashSet<NodeProperties>> attributes,CompilationUnit cu1) throws FileNotFoundException {
+	public static HashMap<NodeProperties, HashSet<NodeProperties>> attributepropertyfinder(HashMap<NodeProperties, HashSet<NodeProperties>> attributes,CompilationUnit cu1) throws FileNotFoundException {
 		/* FileInputStream in = new FileInputStream("/Users/akshatsingh/Downloads/TestVectors.java");	
 		CompilationUnit cu = JavaParser.parse(in);
 		

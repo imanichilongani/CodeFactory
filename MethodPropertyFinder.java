@@ -44,7 +44,6 @@ public class MethodPropertyFinder {
 			NodeProperties.Type the_type = NodeProperties.Type.METHOD;
 			NodeProperties method_node = new NodeProperties(name,ent.getValue(),the_type);
 			HashSet<NodeProperties> props = get_method_prop(ent.getKey(), ent.getValue());
-			props.add(method_node);
 			HashSet<NodeProperties> final_prop = get_used_attributes(attr,method_node,props);
 			map.put(method_node,final_prop);
 
@@ -57,7 +56,7 @@ public class MethodPropertyFinder {
 	/*Returns a HashSet of NodeProperties, used by get_method_map*/
 	public static  HashSet<NodeProperties> get_method_prop(MethodDeclaration method, String the_class){
 		HashSet<NodeProperties> set = new HashSet<NodeProperties>();
-		List<MethodDeclaration> used_methods = method.findAll(MethodDeclaration.class);		
+		List<MethodDeclaration> used_methods = method.findAll(MethodDeclaration.class);
 		for (int i=0;i<used_methods.size();i++) {
 			String name = used_methods.get(i).getNameAsString();
 			NodeProperties.Type the_type = NodeProperties.Type.METHOD;
@@ -91,7 +90,7 @@ public class MethodPropertyFinder {
 			Iterator<NodeProperties> attr_prop_set = ent.getValue().iterator();
 			while(attr_prop_set.hasNext()) {
 				NodeProperties the_node = attr_prop_set.next();
-				if (the_node==method) {
+				if (the_node.name==method.name) {
 					result.add(ent.getKey());
 				}
 			}

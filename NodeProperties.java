@@ -20,13 +20,13 @@ public class NodeProperties {
             return false;
         }
 		final NodeProperties node = (NodeProperties) obj;
-		if (this.name != node.name ){
+		if (this.name.equals(node.name) ){
 			return false;
 		} 
-		if (this.from_class != node.from_class ){
+		if (this.from_class.equals(node.from_class) ){
 			return false;
 		} 
-		if (this.type != node.type ){
+		if (this.type.equals(node.type) ){
 			return false;
 		} 
 		return true;

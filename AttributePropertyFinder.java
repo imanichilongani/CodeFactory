@@ -29,6 +29,8 @@ import com.github.javaparser.ast.stmt.WhileStmt;
 
 public class AttributePropertyFinder {
 	
+		
+		
 	
 	/*Returns a HashMap with VariableDeclarators as keys and A HashSet containing Nodes as values */
 
@@ -107,7 +109,7 @@ public static HashMap<NodeProperties, HashSet<NodeProperties>>get_attributes(Com
 						s1 = s1.replaceAll("[\\p{Punct}&&[^'.]]+", " ");
 						String s2 = assign.getValue().toString();
 						s2 = s2.replaceAll("[\\p{Punct}&&[^'.]]+", " ");
-						String[] splitStr = s1.split("[\\s.]");
+						String[] splitStr = s1.split("[\\s+.]");
 						String[] splitStr2 = s2.split("[\\s+.]");
 						List<String> strlist1 = Arrays.asList(splitStr);
 						List<String> strlist2 = Arrays.asList(splitStr2);

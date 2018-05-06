@@ -87,13 +87,16 @@ public class MethodPropertyFinder {
 		Iterator<Entry<NodeProperties, HashSet<NodeProperties>>> it = attr.entrySet().iterator();
 		while(it.hasNext()) {
 			Entry<NodeProperties, HashSet<NodeProperties>> ent = it.next();
+			//System.out.println("Attribute: " + ent.getKey().name);
 			Iterator<NodeProperties> attr_prop_set = ent.getValue().iterator();
 			while(attr_prop_set.hasNext()) {
 				NodeProperties the_node = attr_prop_set.next();
+				//System.out.println(the_node.name);
 				if (the_node.name==method.name) {
 					result.add(ent.getKey());
 				}
 			}
+			//System.out.println("__________________________");
 		}
 		return result;	
 	}		

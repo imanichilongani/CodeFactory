@@ -10,12 +10,16 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 
 public class Main {
 	public static void main(String[] args) throws FileNotFoundException {		
-		CompilationUnit cu = Property.get_compilation_unit("/Users/imanichilongani/Desktop/test1.java");
-		CompilationUnit cu1 = Property.get_compilation_unit("/Users/imanichilongani/Desktop/test2.java");
-		HashMap<NodeProperties, HashSet<NodeProperties>> attr_prop = (HashMap<NodeProperties, HashSet<NodeProperties>>) AttributePropertyFinder.get_attributes(cu);
-		HashMap<NodeProperties, HashSet<NodeProperties>> attr_prop1 = (HashMap<NodeProperties, HashSet<NodeProperties>>) AttributePropertyFinder.get_attributes(cu1);
+		CompilationUnit cu = Property.get_compilation_unit("/Users/akshatsingh/CodeFactory/test1.java");
+		CompilationUnit cu1 = Property.get_compilation_unit("/Users/akshatsingh/CodeFactory/test2.java");
+		AttributePropertyFinder t = new AttributePropertyFinder();
+		HashMap<NodeProperties, HashSet<NodeProperties>> attr_prop = (HashMap<NodeProperties, HashSet<NodeProperties>>) t.get_attributes(cu);
+		HashMap<NodeProperties, HashSet<NodeProperties>> attr_prop1 = (HashMap<NodeProperties, HashSet<NodeProperties>>) t.get_attributes(cu1);
 		attr_prop.putAll(attr_prop1);
-		HashMap<NodeProperties,HashSet<NodeProperties>> attribute_prop = (HashMap<NodeProperties, HashSet<NodeProperties>>) AttributePropertyFinder.attributepropertyfinder(attr_prop, cu);
+		HashMap<NodeProperties, HashSet<NodeProperties>> attr_prop3 = (HashMap<NodeProperties, HashSet<NodeProperties>>) t.get_attributes(cu);
+		HashMap<NodeProperties, HashSet<NodeProperties>> attr_prop4 = (HashMap<NodeProperties, HashSet<NodeProperties>>) t.get_attributes(cu1);
+		attr_prop3.putAll(attr_prop4);
+		HashMap<NodeProperties,HashSet<NodeProperties>> attribute_prop = (HashMap<NodeProperties, HashSet<NodeProperties>>) t.attributepropertyfinder(attr_prop, cu);
 		Iterator<Entry<NodeProperties, HashSet<NodeProperties>>> entity_g = attribute_prop.entrySet().iterator();
 		while(entity_g.hasNext()) {
 			Entry<NodeProperties, HashSet<NodeProperties>> y = entity_g.next();
@@ -29,10 +33,7 @@ public class Main {
 			System.out.println("--------------");
 		} 
 		System.out.println("--------------------------------------");
-		HashMap<NodeProperties,HashSet<NodeProperties>> attribute1_prop = (HashMap<NodeProperties, HashSet<NodeProperties>>) AttributePropertyFinder.attributepropertyfinder(attr_prop, cu1);
-		
-		
-		
+		HashMap<NodeProperties,HashSet<NodeProperties>> attribute1_prop = (HashMap<NodeProperties, HashSet<NodeProperties>>)t.attributepropertyfinder(attr_prop3, cu1);
 		Iterator<Entry<NodeProperties, HashSet<NodeProperties>>> attr = attribute1_prop.entrySet().iterator();
 		
 		while (attr.hasNext()) {
@@ -74,7 +75,7 @@ public class Main {
 				}
 			System.out.println("--------------");
 		} 
-		
+		System.out.println("--------------------------------------");
 		HashMap<MethodDeclaration, String> methods = (HashMap<MethodDeclaration, String>) MethodPropertyFinder.get_methods(cu);
 		HashMap<NodeProperties, HashSet<NodeProperties>> method_prop = (HashMap<NodeProperties, HashSet<NodeProperties>>) MethodPropertyFinder.get_method_map(methods, attribute_prop);
 		HashMap<NodeProperties, HashMap<NodeProperties, Float>> result = new HashMap<NodeProperties, HashMap<NodeProperties, Float>>();
@@ -90,10 +91,21 @@ public class Main {
 				method_prop.put(it1.getKey(), it1.getValue());
 			}
 		}
-		
-		
+		Iterator<Entry<NodeProperties, HashSet<NodeProperties>>> entity_a= method_prop.entrySet().iterator();
+		while(entity_a.hasNext()) {
+			Entry<NodeProperties, HashSet<NodeProperties>> y = entity_a.next();
+			System.out.println("Attribute: " + y.getKey().name);
+			Iterator<NodeProperties> th = y.getValue().iterator();
+			while (th.hasNext()) {
+					NodeProperties nde = th.next();
+					System.out.println("prop: " + nde.name);
+					System.out.println("class: " + nde.from_class);
+				}
+			System.out.println("--------------");
+		}
+		System.out.println("--------------------------------------");
 
-		
+		method_prop.putAll(attribute_prop);
 		
 		Iterator<Entry<NodeProperties, HashSet<NodeProperties>>> entity_x = method_prop.entrySet().iterator();
 		Distance d = new Distance();
@@ -101,30 +113,11 @@ public class Main {
 			Entry<NodeProperties, HashSet<NodeProperties>> x = entity_x.next();
 			HashMap<NodeProperties, Float> distances_x = new HashMap<NodeProperties, Float>();
 			Iterator<Entry<NodeProperties, HashSet<NodeProperties>>> entity_y = method_prop.entrySet().iterator();
-			/** while(entity_y.hasNext()) {
-				Entry<NodeProperties, HashSet<NodeProperties>> y = entity_y.next();
-				System.out.println("Method: " + y.getKey().name);
-				Iterator<NodeProperties> th = y.getValue().iterator();
-				while (th.hasNext()) {
-						NodeProperties nde = th.next();
-						System.out.println("prop: " + nde.name);
-						System.out.println("class: " + nde.from_class);
-					}
-				System.out.println("--------------");
-			} **/
 			while(entity_y.hasNext()) {
 				Entry<NodeProperties, HashSet<NodeProperties>> y = entity_y.next();
+				System.out.println(x.getKey().name.toUpperCase());
+				System.out.println(y.getKey().name.toUpperCase());
 				float val = d.get_distance(x.getValue(), y.getValue());
-				if (val==0.0) {
-					Iterator<NodeProperties> st = x.getValue().iterator();
-					while (st.hasNext()) {
-						NodeProperties nde = st.next();
-					}
-					Iterator<NodeProperties> st2 = y.getValue().iterator();
-					while (st2.hasNext()) {
-						NodeProperties nde = st2.next();
-					}
-				}
 				distances_x.put(y.getKey(), d.get_distance(x.getValue(), y.getValue()) );
 			}
 			result.put(x.getKey(), distances_x);
@@ -132,7 +125,7 @@ public class Main {
 		
 	
 		//Print 
-		/**Iterator<Entry<NodeProperties, HashMap<NodeProperties, Float>>> res = result.entrySet().iterator();
+		Iterator<Entry<NodeProperties, HashMap<NodeProperties, Float>>> res = result.entrySet().iterator();
 		while (res.hasNext()) {
 			Entry<NodeProperties, HashMap<NodeProperties, Float>> ent = res.next();
 			System.out.println(ent.getKey().name);
@@ -142,6 +135,9 @@ public class Main {
 				System.out.println(value.getKey().name + ": " + value.getValue());
 			}
 			System.out.println("--------------------------");
-		} **/
+		} 
+		String reco = MoveDecider.moveDecider(result);
+		System.out.println(reco);
 	}
+	
 }

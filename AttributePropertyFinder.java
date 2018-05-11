@@ -34,7 +34,7 @@ public class AttributePropertyFinder {
 	
 	/*Returns a HashMap with VariableDeclarators as keys and A HashSet containing Nodes as values */
 
-public static HashMap<NodeProperties, HashSet<NodeProperties>>get_attributes(CompilationUnit cu)  {
+public HashMap<NodeProperties, HashSet<NodeProperties>>get_attributes(CompilationUnit cu)  {
 		
 
 		List<VariableDeclarator> all_attributes = cu.findAll(VariableDeclarator.class); //All variables from CU
@@ -63,7 +63,7 @@ public static HashMap<NodeProperties, HashSet<NodeProperties>>get_attributes(Com
 	
 	
 	
-	public static HashMap<NodeProperties, HashSet<NodeProperties>> attributepropertyfinder(HashMap<NodeProperties, HashSet<NodeProperties>> attributes,CompilationUnit cu1) throws FileNotFoundException {
+	public HashMap<NodeProperties, HashSet<NodeProperties>> attributepropertyfinder(HashMap<NodeProperties, HashSet<NodeProperties>> attributes,CompilationUnit cu1) throws FileNotFoundException {
 		/* FileInputStream in = new FileInputStream("/Users/akshatsingh/Downloads/TestVectors.java");	
 		CompilationUnit cu = JavaParser.parse(in);
 		

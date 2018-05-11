@@ -8,9 +8,10 @@ public class Intersection {
 		
 		int count =0;
 		for(NodeProperties z:x){
-			if (y.contains(z)){
-				count = count +1;
-				
+			for(NodeProperties a:y){
+				if(z.name.equals(a.name)){
+					count=count+1;
+				}
 			}
 		}
 		

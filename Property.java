@@ -25,18 +25,12 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 
 
 public class Property {
-	public static void main(String[] args) throws Exception {
+	public void main(String[] args) throws Exception {
 		CompilationUnit cu = get_compilation_unit("/Users/akshatsingh/Downloads/CLL.java");
-		Map<NodeProperties, HashSet<NodeProperties>> attr_set = AttributePropertyFinder.get_attributes(cu);
+		AttributePropertyFinder a = new AttributePropertyFinder();
+		Map<NodeProperties, HashSet<NodeProperties>> attr_set = a.get_attributes(cu);
 		Map<MethodDeclaration, HashSet<Node>> method_set = get_methods(cu);
-		/*Iterator<Entry<MethodDeclaration, HashSet<Node>>> it = method_set.entrySet().iterator();
-		while(it.hasNext()) {
-			Entry<MethodDeclaration, HashSet<Node>> ent = it.next();
-			System.out.println(ent.getKey().getNameAsString());
-			System.out.println("_______________________________");
-			System.out.println(get_method_prop(ent));
-			System.out.println("------------******-------------");
-		}*/
+		Iterator<Entry<MethodDeclaration, HashSet<Node>>> it = method_set.entrySet().iterator();
 		
 	}
 	
@@ -50,7 +44,7 @@ public class Property {
 	
 
 	
-public static Map<NodeProperties, HashSet<NodeProperties>>get_attributes(CompilationUnit cu)  {
+public Map<NodeProperties, HashSet<NodeProperties>>get_attributes(CompilationUnit cu)  {
 		
 
 		List<VariableDeclarator> all_attributes = cu.findAll(VariableDeclarator.class); //All variables from CU
@@ -82,7 +76,7 @@ public static Map<NodeProperties, HashSet<NodeProperties>>get_attributes(Compila
 	}
 	
 	
-	public static Map<MethodDeclaration, HashSet<Node>>get_methods(CompilationUnit cu) {
+	public Map<MethodDeclaration, HashSet<Node>>get_methods(CompilationUnit cu) {
 		List<MethodDeclaration> all_methods = cu.findAll(MethodDeclaration.class);
 		Map<MethodDeclaration, HashSet<Node>> method_set = new HashMap<MethodDeclaration, HashSet<Node>>();
 		for (int i=0;i<all_methods.size();i++) {
@@ -93,7 +87,7 @@ public static Map<NodeProperties, HashSet<NodeProperties>>get_attributes(Compila
 	
 	
 	
-	public static  Map.Entry<MethodDeclaration, HashSet<Node>> 
+	public  Map.Entry<MethodDeclaration, HashSet<Node>> 
 				get_method_prop(Map.Entry<MethodDeclaration, HashSet<Node>> meth_prop){
 		MethodDeclaration method = meth_prop.getKey();
 		List<MethodDeclaration> used_methods = method.findAll(MethodDeclaration.class);

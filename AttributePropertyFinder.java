@@ -32,7 +32,7 @@ public class AttributePropertyFinder {
 		
 		
 	
-	/*Returns a HashMap with VariableDeclarators as keys and A HashSet containing Nodes as values */
+/*Returns a HashMap with VariableDeclarators as keys and A HashSet containing Nodes as values */
 
 public HashMap<NodeProperties, HashSet<NodeProperties>>get_attributes(CompilationUnit cu)  {
 		
@@ -64,27 +64,6 @@ public HashMap<NodeProperties, HashSet<NodeProperties>>get_attributes(Compilatio
 	
 	
 	public HashMap<NodeProperties, HashSet<NodeProperties>> attributepropertyfinder(HashMap<NodeProperties, HashSet<NodeProperties>> attributes,CompilationUnit cu1) throws FileNotFoundException {
-		/* FileInputStream in = new FileInputStream("/Users/akshatsingh/Downloads/TestVectors.java");	
-		CompilationUnit cu = JavaParser.parse(in);
-		
-		
-		
-		List<ClassOrInterfaceDeclaration> rtt = cu.findAll(ClassOrInterfaceDeclaration.class);
-		for (int i=0; i<rtt.size();i++) {
-			System.out.println(rtt.get(i).getNameAsString());
-		}
-		List<MethodDeclaration> mthds = cu.findAll(MethodDeclaration.class);
-		List<Expression> expsns = new ArrayList<Expression>();
-		for (int i=0; i<mthds.size();i++) {	
-			expsns.addAll(mthds.get(i).findAll(Expression.class));
-		}
-		for (int i=0; i<expsns.size();i++) {
-			if (expsns.get(i).isAssignExpr()) {
-				AssignExpr assign = (AssignExpr) expsns.get(i);
-				System.out.println(expsns.get(i).toString());
-				System.out.println(assign.getValue().toString());
-			}
-		}*/
 		Set<NodeProperties> attributeset = attributes.keySet();
 		ArrayList<NodeProperties>attributelist  = new ArrayList<NodeProperties>(attributeset);
 		for(NodeProperties n:attributelist){
@@ -225,12 +204,7 @@ public HashMap<NodeProperties, HashSet<NodeProperties>>get_attributes(Compilatio
 }
 		
 		
-		//if((A.a)==st)
-		//A.a=2
-		//x = "A.a" + 4
-		//abcd=5
-		//b=2*a
-		//A.a.toString()
+	
 	
 
 
